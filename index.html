@@ -6,15 +6,11 @@
 </head>
 <body>
 
-
-    <div class="clock">
-      <div class="clock-face">
-        <div class="hand hour-hand"></div>
-        <div class="hand min-hand"></div>
-        <div class="hand second-hand"></div>
-      </div>
-    </div>
-
+  <div class="clock">
+    <div class="hand hour"></div>
+    <div class="hand minute"></div>
+    <div class="hand second"></div>
+  </div>
 
   <style>
     html {
@@ -50,60 +46,61 @@
       position: relative;
       width: 100%;
       height: 100%;
-      transform: translateY(-3px); /* account for the height of the clock hands */
+      /* transform: translateY(-3px); */
     }
+    
     .hand {
-      width: 50%;
-      height: 6px;
-      background: black;
       position: absolute;
-      top: 50%;
-      transform: rotate(90deg);
-      transform-origin: 100%;
-      transition: all 0.5s;
-      transition-timing-function: cubic-bezier(0.46, 0.03, 0.52, 0.96);
-      }
-      .notransition {
-      -webkit-transition: none !important;
-      -moz-transition: none !important;
-      -o-transition: none !important;
-      transition: none !important;
-      }
+      width: 2px;
+      background-color: #111118;
+      bottom: 50%;
+      left: 50%;
+      transform-origin: 50% 100%;
+    }
+
+    .hour {
+      width: 5px;
+      height: 80px;
+    }
+
+    .minute {
+      width: 3px;
+      height: 120px;
+    }
+
+    .second {
+      height: 150px;
+      background-color: #ff4141;
     }
   </style>
 
   <script>
-    const hand = document.querySelector('.hand')
-    const hourHand = document.querySelector('.hour-hand')
-    const minHand = document.querySelector('.min-hand')
-    const secondHand = document.querySelector('.second-hand')
-
-    function setDate() {
-      const now = new Date();
-
-      const hours = now.getHours();
-      const hoursDegrees = ((hours / 24) * 360) + 90;
-      hourHand.style.transform = `rotate(${hoursDegrees}deg)`
-
-      const mins = now.getMinutes();
-      const minsDegrees = ((mins / 60) * 360) + 90;
-      minHand.style.transform = `rotate(${minsDegrees}deg)`
-
-      const seconds = now.getSeconds();
-      const secondsDegrees = ((seconds / 60) * 360) + 90;
-      if (secondsDegrees>=450) {
-        hand.classList.add('notransition')
-      secondsDegrees = 0
-      } else if (secondsDegrees>=0) {
-        hand.classList.remove('notransition')
-
-      }
-      secondHand.style.transform = `rotate(${secondsDegrees}deg)`
-      console.log(seconds)
-      console.log(secondsDegrees)
-      console.log('-------')
+    function runClock() {
+  
+      const now = new Date()
+      
+      const hour = now.getHours() % 12
+      const min  = now.getMinutes()
+      const sec  = now.getSeconds()
+      const ms   = now.getMilliseconds()
+      
+      const clock = document.querySelector("div.clock")
+      const hourHand = clock.querySelector("div.hour")
+      const minHand  = clock.querySelector("div.minute")
+      const secHand  = clock.querySelector("div.second")
+      
+      const hourRotation = 30 * hour + (0.5 * min)
+      const minRotation = 6 * min + (0.1 * sec)
+      const secRotation = 6 * sec + 0.006 * ms
+      
+      hourHand.style.transform = "rotate(" + hourRotation.toFixed(3) + "deg)"
+      minHand.style.transform = "rotate(" + minRotation.toFixed(3) + "deg)"
+      secHand.style.transform = "rotate(" + secRotation.toFixed(3) + "deg)"
+      
+      requestAnimationFrame(runClock)
     }
-    setInterval(setDate, 1000);
+
+    runClock()
   </script>
 </body>
 </html>
